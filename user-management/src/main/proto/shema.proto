@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+import "google/protobuf/empty.proto";
+
+package com.sadhan.proto;
+
+message JwtRequest{
+      string username = 1;
+      string password = 2;
+}
+
+message JwtResponse{
+      string jwtToken = 1;
+}
+
+
+message Employee{
+      string id = 1;
+      string name = 2;
+      string email = 3;
+      string phone = 4;
+      string department = 5;
+}
+
+service EmployeeService{
+      rpc getEmployeeInfo(google.protobuf.Empty) returns (Employee){}
+}
+
+service AuthService{
+      rpc authenticate(JwtRequest) returns (JwtResponse){}
+}
