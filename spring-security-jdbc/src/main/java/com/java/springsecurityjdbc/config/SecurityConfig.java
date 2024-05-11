@@ -18,7 +18,9 @@ public class SecurityConfig {
         .authorizeHttpRequests(authorizeConfig -> {
           authorizeConfig.requestMatchers("/").permitAll();
           authorizeConfig.requestMatchers("/users").authenticated();
-        }).formLogin(Customizer.withDefaults());
+        }).formLogin(Customizer.withDefaults())
+        .oauth2Login(Customizer.withDefaults());
+
     return http.build();
   }
 
