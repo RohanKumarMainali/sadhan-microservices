@@ -1,5 +1,6 @@
 package com.sadhan.usermanagement.jwt;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -35,8 +36,8 @@ public class JwtAuthProvider implements AuthenticationProvider {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
       String role = username.equals("rohan") ? "ROLE_ADMIN" : "ROLE_USER";
-      return new User(username, "",
-          List.of(new SimpleGrantedAuthority(role)));
+      List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(role));
+      return new User(username, "", authorities);
     }
 
   }

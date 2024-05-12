@@ -1,8 +1,14 @@
 package com.sadhan.usermanagement.config;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import javax.crypto.SecretKey;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDecisionManager;
@@ -18,6 +24,11 @@ import org.springframework.security.core.userdetails.User;
 import com.sadhan.proto.EmployeeServiceGrpc;
 import com.sadhan.usermanagement.jwt.JwtAuthProvider;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import net.devh.boot.grpc.server.security.authentication.BearerAuthenticationReader;
 import net.devh.boot.grpc.server.security.authentication.GrpcAuthenticationReader;
 import net.devh.boot.grpc.server.security.check.AccessPredicate;
@@ -31,6 +42,9 @@ public class SecurityConfig {
 
   private final JwtAuthProvider jwtAuthProvider;
 
+  @Value("${jwt.secret.key}")
+  String jwtSecretKey;
+
   public SecurityConfig(JwtAuthProvider jwtAuthProvider) {
     this.jwtAuthProvider = jwtAuthProvider;
   }
@@ -42,17 +56,16 @@ public class SecurityConfig {
 
   @Bean
   GrpcAuthenticationReader grpcAuthenticationReader() {
-    return new BearerAuthenticationReader(token -> {
-      System.out.println("Token: " + token);
-      if (token.equals("rohan")) {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        return new UsernamePasswordAuthenticationToken(new User("rohan", "", authorities), "", authorities);
-      }
 
-      List<GrantedAuthority> authorities = new ArrayList<>();
-      authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-      return new UsernamePasswordAuthenticationToken(new User("rohan", "", authorities), "", authorities);
+    return new BearerAuthenticationReader(token -> {
+      SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(jwtSecretKey));
+      Jws<Claims> claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
+      List<SimpleGrantedAuthority> authorities = Arrays.stream(
+          claims.getPayload().get("auth").toString().split(",")).map(SimpleGrantedAuthority::new)
+          .collect(Collectors.toList());
+      return new UsernamePasswordAuthenticationToken(new User(claims.getPayload().getSubject(), token, authorities),
+          token,
+          authorities);
     });
 
   }

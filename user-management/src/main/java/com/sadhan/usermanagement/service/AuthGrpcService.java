@@ -1,8 +1,11 @@
 package com.sadhan.usermanagement.service;
 
+import java.security.Key;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+
+import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,6 +19,8 @@ import org.springframework.security.core.Authentication;
 import io.grpc.stub.StreamObserver;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import net.devh.boot.grpc.server.service.GrpcService;
 
 @GrpcService
@@ -40,19 +45,16 @@ public class AuthGrpcService extends AuthServiceGrpc.AuthServiceImplBase {
     Instant now = Instant.now();
     Instant expiry = now.plus(1, ChronoUnit.HOURS);
 
-    // JwtResponse response = JwtResponse.newBuilder().setJwtToken(
-    // Jwts.builder().setSubject("")
-    // .claim("auth", authority)
-    // .setIssuedAt(Date.from(now))
-    // .setExpiration(Date.from(expiry))
-    // .signWith(SignatureAlgorithm.HS512, jwtSecretKey)
-    // .compact())
-    // .build();
+    SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(jwtSecretKey));
+    String jwt = Jwts.builder().subject(request.getUsername())
+        .claim("auth", authority)
+        .setIssuedAt(Date.from(now))
+        .setExpiration(Date.from(expiry))
+        .signWith(key).compact();
 
-    JwtResponse newResponse = JwtResponse.newBuilder().setJwtToken("I am logged in").build();
+    JwtResponse response = JwtResponse.newBuilder().setJwtToken(jwt).build();
 
-    responseObserver.onNext(newResponse);
+    responseObserver.onNext(response);
     responseObserver.onCompleted();
-
   }
 }
