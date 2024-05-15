@@ -2,32 +2,42 @@ package com.sadhan.usermanagement.models;
 
 import java.sql.Time;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "users")
 public class User {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private String id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
   private String name;
   private String email;
   private String password;
   private String role;
   private String status;
+
+  @CreationTimestamp
   private Time created_at;
+  @LastModifiedDate
   private Time updated_at;
-  private Time deleted_at;
-  private Time last_login_at;
+  private boolean deleted = Boolean.FALSE;
+  private Time last_login_at = null;
 
   public User() {
   }
 
-  public User(String id, String name, String email, String password, String role, String status, Time created_at,
-      Time updated_at, Time deleted_at, Time last_login_at) {
+  public User(Long id, String name, String email, String password, String role, String status, Time created_at,
+      Time updated_at, Boolean deleted, Time last_login_at) {
+    super();
     this.id = id;
     this.name = name;
     this.email = email;
@@ -36,15 +46,15 @@ public class User {
     this.status = status;
     this.created_at = created_at;
     this.updated_at = updated_at;
-    this.deleted_at = deleted_at;
+    this.deleted = deleted;
     this.last_login_at = last_login_at;
   }
 
-  public String getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(String id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
@@ -104,16 +114,16 @@ public class User {
     this.updated_at = updated_at;
   }
 
-  public Time getDeleted_at() {
-    return deleted_at;
-  }
-
-  public void setDeleted_at(Time deleted_at) {
-    this.deleted_at = deleted_at;
-  }
-
   public Time getLast_login_at() {
     return last_login_at;
+  }
+
+  public boolean isDeleted() {
+    return deleted;
+  }
+
+  public void setDeleted(boolean deleted) {
+    this.deleted = deleted;
   }
 
   public void setLast_login_at(Time last_login_at) {

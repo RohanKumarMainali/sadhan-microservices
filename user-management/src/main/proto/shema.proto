@@ -23,10 +23,35 @@ message Employee{
       string department = 5;
 }
 
+message User{
+  string name = 1;
+  string email = 2;
+  string password = 3;
+  string role = 4;
+  string status = 5;
+  }
+
+  message CreateUserRequest{
+
+  string name = 1;
+  string email = 2;
+  string password = 3;
+  string role = 4;
+  string status = 5;
+  }
+
+  message CreateUserResponse{
+    string message = 1;
+  }
+
 service EmployeeService{
       rpc getEmployeeInfo(google.protobuf.Empty) returns (Employee){}
 }
 
 service AuthService{
       rpc authenticate(JwtRequest) returns (JwtResponse){}
+}
+
+service UserService{
+  rpc createUser(CreateUserRequest) returns (CreateUserResponse){}
 }
