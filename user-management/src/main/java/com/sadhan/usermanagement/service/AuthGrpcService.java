@@ -38,7 +38,7 @@ public class AuthGrpcService extends AuthServiceGrpc.AuthServiceImplBase {
   @Override
   public void authenticate(JwtRequest request, StreamObserver<JwtResponse> responseObserver) {
     Authentication authenticate = jwtAuthProvider.authenticate(
-        new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
     String authority = authenticate.getAuthorities().iterator().next().getAuthority();
 
@@ -46,7 +46,7 @@ public class AuthGrpcService extends AuthServiceGrpc.AuthServiceImplBase {
     Instant expiry = now.plus(1, ChronoUnit.HOURS);
 
     SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(jwtSecretKey));
-    String jwt = Jwts.builder().subject(request.getUsername())
+    String jwt = Jwts.builder().subject(request.getEmail())
         .claim("auth", authority)
         .setIssuedAt(Date.from(now))
         .setExpiration(Date.from(expiry))

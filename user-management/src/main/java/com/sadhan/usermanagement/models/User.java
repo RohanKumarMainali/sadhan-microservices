@@ -29,7 +29,7 @@ public class User {
   private Time created_at;
   @LastModifiedDate
   private Time updated_at;
-  private boolean deleted = Boolean.FALSE;
+  private Boolean deleted = false;
   private Time last_login_at = null;
 
   public User() {
@@ -118,11 +118,11 @@ public class User {
     return last_login_at;
   }
 
-  public boolean isDeleted() {
+  public Boolean isDeleted() {
     return deleted;
   }
 
-  public void setDeleted(boolean deleted) {
+  public void setDeleted(Boolean deleted) {
     this.deleted = deleted;
   }
 
