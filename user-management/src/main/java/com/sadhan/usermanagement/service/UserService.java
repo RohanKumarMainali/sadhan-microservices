@@ -1,6 +1,7 @@
 package com.sadhan.usermanagement.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.sadhan.proto.CreateUserRequest;
 import com.sadhan.proto.CreateUserResponse;
@@ -17,14 +18,18 @@ class UserService extends UserServiceImplBase {
   @Autowired
   private UserRepository userRepository;
 
+  @Autowired
+  private PasswordEncoder passwordEncoder;
+
   @Override
   public void createUser(CreateUserRequest request, StreamObserver<CreateUserResponse> responseObserver) {
 
+    String encodedPassword = passwordEncoder.encode(request.getPassword());
     // Save the user to the database
     User user = new User();
     user.setName(request.getName());
     user.setEmail(request.getEmail());
-    user.setPassword(request.getPassword());
+    user.setPassword(encodedPassword);
     user.setRole(request.getRole());
     user.setStatus(request.getStatus());
     User userResponse = userRepository.save(user);
