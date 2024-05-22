@@ -7,6 +7,8 @@ import java.util.Date;
 
 import javax.crypto.SecretKey;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -40,10 +42,11 @@ public class AuthGrpcService extends AuthServiceGrpc.AuthServiceImplBase {
   @Override
   public void authenticate(JwtRequest request, StreamObserver<JwtResponse> responseObserver) {
     JwtResponse response;
+    Logger logger = LoggerFactory.getLogger(AuthGrpcService.class);
     try {
+      logger.info("Authenticating user");
       Authentication authenticate = jwtAuthProvider.authenticate(
           new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-
       String authority = authenticate.getAuthorities().iterator().next().getAuthority();
       Instant now = Instant.now();
       Instant expiry = now.plus(1, ChronoUnit.HOURS);
@@ -56,10 +59,13 @@ public class AuthGrpcService extends AuthServiceGrpc.AuthServiceImplBase {
 
       response = JwtResponse.newBuilder().setStatusCode(200).setJwtToken(jwt).setMessage("User logged in successfully")
           .build();
+      logger.info("User logged in successfully");
     } catch (BadCredentialsException | UsernameNotFoundException e) {
+      logger.error("Invalid credentials");
       response = JwtResponse.newBuilder().setStatusCode(401).setError("Invalid credentials")
           .setMessage("Invalid credentials").build();
     } catch (Exception e) {
+      logger.error("Internal server error");
       response = JwtResponse.newBuilder().setStatusCode(500).setError("Internal server error")
           .setMessage("Internal server error").build();
     }
