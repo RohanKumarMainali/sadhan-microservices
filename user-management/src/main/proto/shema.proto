@@ -11,7 +11,10 @@ message JwtRequest{
 }
 
 message JwtResponse{
-      string jwtToken = 1;
+    int32 statusCode = 1;
+    string jwtToken = 2;
+    string error = 3;
+    string message = 4;
 }
 
 

@@ -8,6 +8,7 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import com.sadhan.proto.AuthServiceGrpc;
@@ -15,6 +16,7 @@ import com.sadhan.proto.JwtRequest;
 import com.sadhan.proto.JwtResponse;
 import com.sadhan.usermanagement.jwt.JwtAuthProvider;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import io.grpc.stub.StreamObserver;
 import io.jsonwebtoken.Jwts;
@@ -37,22 +39,30 @@ public class AuthGrpcService extends AuthServiceGrpc.AuthServiceImplBase {
 
   @Override
   public void authenticate(JwtRequest request, StreamObserver<JwtResponse> responseObserver) {
-    Authentication authenticate = jwtAuthProvider.authenticate(
-        new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+    JwtResponse response;
+    try {
+      Authentication authenticate = jwtAuthProvider.authenticate(
+          new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
-    String authority = authenticate.getAuthorities().iterator().next().getAuthority();
+      String authority = authenticate.getAuthorities().iterator().next().getAuthority();
+      Instant now = Instant.now();
+      Instant expiry = now.plus(1, ChronoUnit.HOURS);
+      SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(jwtSecretKey));
+      String jwt = Jwts.builder().subject(request.getEmail())
+          .claim("auth", authority)
+          .setIssuedAt(Date.from(now))
+          .setExpiration(Date.from(expiry))
+          .signWith(key).compact();
 
-    Instant now = Instant.now();
-    Instant expiry = now.plus(1, ChronoUnit.HOURS);
-
-    SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(jwtSecretKey));
-    String jwt = Jwts.builder().subject(request.getEmail())
-        .claim("auth", authority)
-        .setIssuedAt(Date.from(now))
-        .setExpiration(Date.from(expiry))
-        .signWith(key).compact();
-
-    JwtResponse response = JwtResponse.newBuilder().setJwtToken(jwt).build();
+      response = JwtResponse.newBuilder().setStatusCode(200).setJwtToken(jwt).setMessage("User logged in successfully")
+          .build();
+    } catch (BadCredentialsException | UsernameNotFoundException e) {
+      response = JwtResponse.newBuilder().setStatusCode(401).setError("Invalid credentials")
+          .setMessage("Invalid credentials").build();
+    } catch (Exception e) {
+      response = JwtResponse.newBuilder().setStatusCode(500).setError("Internal server error")
+          .setMessage("Internal server error").build();
+    }
 
     responseObserver.onNext(response);
     responseObserver.onCompleted();

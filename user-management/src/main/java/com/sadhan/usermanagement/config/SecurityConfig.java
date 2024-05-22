@@ -1,6 +1,5 @@
 package com.sadhan.usermanagement.config;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,7 +7,6 @@ import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,10 +16,8 @@ import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -33,7 +29,6 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.Resource;
 import net.devh.boot.grpc.server.security.authentication.BearerAuthenticationReader;
 import net.devh.boot.grpc.server.security.authentication.GrpcAuthenticationReader;
 import net.devh.boot.grpc.server.security.check.AccessPredicate;
@@ -42,13 +37,9 @@ import net.devh.boot.grpc.server.security.check.GrpcSecurityMetadataSource;
 import net.devh.boot.grpc.server.security.check.ManualGrpcSecurityMetadataSource;
 
 @Configuration
-
 public class SecurityConfig {
 
   private final JwtAuthProvider jwtAuthProvider;
-
-  @Autowired
-  private UserDetailsService userDetailsService;
 
   @Value("${jwt.secret.key}")
   String jwtSecretKey;
@@ -58,7 +49,13 @@ public class SecurityConfig {
   }
 
   @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
+
+  @Bean
   AuthenticationManager authenticationManager() {
+    jwtAuthProvider.setPasswordEncoder(passwordEncoder());
     return new ProviderManager(jwtAuthProvider);
   }
 
@@ -91,11 +88,6 @@ public class SecurityConfig {
     List<AccessDecisionVoter<?>> accessDecisionVoters = new ArrayList<>();
     accessDecisionVoters.add(new AccessPredicateVoter());
     return new UnanimousBased(accessDecisionVoters);
-
   }
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
 }
