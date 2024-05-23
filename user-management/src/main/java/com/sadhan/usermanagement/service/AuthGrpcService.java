@@ -4,6 +4,8 @@ import java.security.Key;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.SecretKey;
 
@@ -51,8 +53,11 @@ public class AuthGrpcService extends AuthServiceGrpc.AuthServiceImplBase {
       Instant now = Instant.now();
       Instant expiry = now.plus(1, ChronoUnit.HOURS);
       SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(jwtSecretKey));
+      Map<String, String> claimMap = new HashMap<>();
+      claimMap.put("email", authenticate.getName());
+      claimMap.put("role", authority);
       String jwt = Jwts.builder().subject(request.getEmail())
-          .claim("auth", authority)
+          .claims(claimMap)
           .setIssuedAt(Date.from(now))
           .setExpiration(Date.from(expiry))
           .signWith(key).compact();

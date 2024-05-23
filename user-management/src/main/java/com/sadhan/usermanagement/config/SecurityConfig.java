@@ -21,6 +21,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import org.springframework.security.core.Authentication;
 import com.sadhan.proto.EmployeeServiceGrpc;
 import com.sadhan.usermanagement.jwt.JwtAuthProvider;
 
@@ -66,11 +67,15 @@ public class SecurityConfig {
       SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(jwtSecretKey));
       Jws<Claims> claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
       List<SimpleGrantedAuthority> authorities = Arrays.stream(
-          claims.getPayload().get("auth").toString().split(",")).map(SimpleGrantedAuthority::new)
+          claims.getPayload().get("role").toString().split(",")).map(SimpleGrantedAuthority::new)
           .collect(Collectors.toList());
-      return new UsernamePasswordAuthenticationToken(new User(claims.getPayload().getSubject(), token, authorities),
+      System.out.println("Authorities: " + authorities);
+      Authentication authentication = new UsernamePasswordAuthenticationToken(
+          new User(claims.getPayload().getSubject(), token, authorities),
           token,
           authorities);
+
+      return authentication;
     });
 
   }
@@ -79,7 +84,7 @@ public class SecurityConfig {
   GrpcSecurityMetadataSource grpcSecurityMetadataSource() {
     ManualGrpcSecurityMetadataSource source = new ManualGrpcSecurityMetadataSource();
     source.setDefault(AccessPredicate.permitAll());
-    source.set(EmployeeServiceGrpc.getGetEmployeeInfoMethod(), AccessPredicate.hasRole("ROLE_ADMIN"));
+    source.set(EmployeeServiceGrpc.getGetEmployeeInfoMethod(), AccessPredicate.hasRole("admin"));
     return source;
   }
 
