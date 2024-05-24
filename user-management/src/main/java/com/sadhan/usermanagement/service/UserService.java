@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.sadhan.proto.CreateUserRequest;
 import com.sadhan.proto.CreateUserResponse;
 import com.sadhan.proto.UserServiceGrpc.UserServiceImplBase;
+import com.sadhan.usermanagement.common.EnumMapper;
 import com.sadhan.usermanagement.models.User;
 import com.sadhan.usermanagement.repositories.UserRepository;
 
@@ -26,12 +27,13 @@ class UserService extends UserServiceImplBase {
 
     String encodedPassword = passwordEncoder.encode(request.getPassword());
     // Save the user to the database
+    EnumMapper em = new EnumMapper();
     User user = new User();
     user.setName(request.getName());
     user.setEmail(request.getEmail());
     user.setPassword(encodedPassword);
-    user.setRole(request.getRole());
-    user.setStatus(request.getStatus());
+    user.setRole(em.mapProtoRoleToJava(request.getRole()));
+    user.setStatus(em.mapProtoStatusToJava(request.getStatus()));
     User userResponse = userRepository.save(user);
     responseObserver.onNext(CreateUserResponse.newBuilder().setMessage("User created successfully").build());
     responseObserver.onCompleted();

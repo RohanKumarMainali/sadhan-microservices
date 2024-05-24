@@ -16,6 +16,18 @@ message JwtResponse{
     string error = 3;
     string message = 4;
 }
+enum Role {
+    ADMIN = 0;
+    USER = 1;
+    HOST = 2;
+}
+
+// Define the Status enum
+enum Status {
+    ACTIVE = 0;
+    INACTIVE = 1;
+    PENDING = 2;
+}
 
 
 message Employee{
@@ -30,8 +42,8 @@ message User{
   string name = 1;
   string email = 2;
   string password = 3;
-  string role = 4;
-  string status = 5;
+  Role role = 4;
+  Status status = 5;
   }
 
   message CreateUserRequest{
@@ -39,8 +51,8 @@ message User{
   string name = 1;
   string email = 2;
   string password = 3;
-  string role = 4;
-  string status = 5;
+  Role role = 4;
+  Status status = 5;
   }
 
   message CreateUserResponse{

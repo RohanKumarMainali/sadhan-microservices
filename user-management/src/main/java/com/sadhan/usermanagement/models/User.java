@@ -1,42 +1,83 @@
 package com.sadhan.usermanagement.models;
 
-import java.sql.Time;
+import java.time.LocalDateTime;
 
+import org.checkerframework.common.aliasing.qual.Unique;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
 public class User {
 
+  public enum UserRole {
+    ADMIN("admin"), USER("user"), HOST("host");
+
+    public int[] split(String string) {
+      return null;
+    }
+
+    private final String displayName;
+
+    UserRole(String displayName) {
+      this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+      return displayName;
+    }
+  }
+
+  public enum UserStatus {
+    ACTIVE("active"), INACTIVE("inactive"), PENDING("pending");
+
+    private final String displayName;
+
+    UserStatus(String displayName) {
+      this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+      return displayName;
+    }
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private String name;
+  @Column(unique = true)
   private String email;
   private String password;
-  private String role;
-  private String status;
+
+  @Enumerated(EnumType.STRING)
+  private UserRole role;
+
+  @Enumerated(EnumType.STRING)
+  private UserStatus status;
 
   @CreationTimestamp
-  private Time created_at;
+  private LocalDateTime created_at;
   @LastModifiedDate
-  private Time updated_at;
+  private LocalDateTime updated_at;
   private Boolean deleted = false;
-  private Time last_login_at = null;
+  private LocalDateTime last_login_at = null;
 
   public User() {
   }
 
-  public User(Long id, String name, String email, String password, String role, String status, Time created_at,
-      Time updated_at, Boolean deleted, Time last_login_at) {
+  public User(Long id, String name, String email, String password, UserRole role, UserStatus status,
+      LocalDateTime created_at,
+      LocalDateTime updated_at, Boolean deleted, LocalDateTime last_login_at) {
     super();
     this.id = id;
     this.name = name;
@@ -82,39 +123,39 @@ public class User {
     this.password = password;
   }
 
-  public String getRole() {
+  public UserRole getRole() {
     return role;
   }
 
-  public void setRole(String role) {
+  public void setRole(UserRole role) {
     this.role = role;
   }
 
-  public String getStatus() {
+  public UserStatus getStatus() {
     return status;
   }
 
-  public void setStatus(String status) {
+  public void setStatus(UserStatus status) {
     this.status = status;
   }
 
-  public Time getCreated_at() {
+  public LocalDateTime getCreated_at() {
     return created_at;
   }
 
-  public void setCreated_at(Time created_at) {
+  public void setCreated_at(LocalDateTime created_at) {
     this.created_at = created_at;
   }
 
-  public Time getUpdated_at() {
+  public LocalDateTime getUpdated_at() {
     return updated_at;
   }
 
-  public void setUpdated_at(Time updated_at) {
+  public void setUpdated_at(LocalDateTime updated_at) {
     this.updated_at = updated_at;
   }
 
-  public Time getLast_login_at() {
+  public LocalDateTime getLast_login_at() {
     return last_login_at;
   }
 
@@ -126,7 +167,7 @@ public class User {
     this.deleted = deleted;
   }
 
-  public void setLast_login_at(Time last_login_at) {
+  public void setLast_login_at(LocalDateTime last_login_at) {
     this.last_login_at = last_login_at;
   }
 
