@@ -1,10 +1,8 @@
 package com.sadhan.usermanagement.service;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -41,19 +39,16 @@ public class MyUserDetails implements UserDetails {
 
   @Override
   public boolean isAccountNonExpired() {
-    // TODO Auto-generated method stub
     return false;
   }
 
   @Override
   public boolean isAccountNonLocked() {
-    // TODO Auto-generated method stub
     return false;
   }
 
   @Override
   public boolean isCredentialsNonExpired() {
-    // TODO Auto-generated method stub
     return false;
   }
 
