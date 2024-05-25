@@ -51,12 +51,12 @@ message User{
   string name = 1;
   string email = 2;
   string password = 3;
-  Role role = 4;
-  Status status = 5;
   }
 
   message CreateUserResponse{
-    string message = 1;
+    int32 statusCode = 1;
+    string error = 3;
+    string message = 4;
   }
 
 service EmployeeService{

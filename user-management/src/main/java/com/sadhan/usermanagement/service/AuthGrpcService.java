@@ -1,6 +1,5 @@
 package com.sadhan.usermanagement.service;
 
-import java.security.Key;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -14,17 +13,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.sadhan.proto.AuthServiceGrpc;
 import com.sadhan.proto.JwtRequest;
 import com.sadhan.proto.JwtResponse;
 import com.sadhan.usermanagement.jwt.JwtAuthProvider;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import io.grpc.stub.StreamObserver;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import net.devh.boot.grpc.server.service.GrpcService;
