@@ -1,0 +1,22 @@
+server:
+  port: 8081
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: path_route
+          uri: http://localhost:8080
+          predicates:
+            - Path=/user/**
+        # - id: json-route
+        #   uri: https://localhost:9090
+        #   predicates:
+        #     - Path=/createUser/**
+        # filters:
+        #   - name: JsonToGrpc
+        #     args:
+        #       protoDescriptor: file:../proto/schema.pb
+        #       protoFile: file:../proto/schema.pb
+        #       service: UserService
+        #       method: createUser
