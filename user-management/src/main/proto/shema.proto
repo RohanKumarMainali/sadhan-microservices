@@ -1,7 +1,6 @@
 syntax = "proto3";
 
 option java_multiple_files = true;
-import "google/protobuf/empty.proto";
 
 package com.sadhan.proto;
 
@@ -59,9 +58,6 @@ message User{
     string message = 4;
   }
 
-service EmployeeService{
-      rpc getEmployeeInfo(google.protobuf.Empty) returns (Employee){}
-}
 
 service AuthService{
       rpc authenticate(JwtRequest) returns (JwtResponse){}

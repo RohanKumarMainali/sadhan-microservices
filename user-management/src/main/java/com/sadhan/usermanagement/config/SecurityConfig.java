@@ -22,7 +22,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.security.core.Authentication;
-import com.sadhan.proto.EmployeeServiceGrpc;
 import com.sadhan.usermanagement.jwt.JwtAuthProvider;
 
 import io.jsonwebtoken.Claims;
@@ -84,7 +83,8 @@ public class SecurityConfig {
   GrpcSecurityMetadataSource grpcSecurityMetadataSource() {
     ManualGrpcSecurityMetadataSource source = new ManualGrpcSecurityMetadataSource();
     source.setDefault(AccessPredicate.permitAll());
-    source.set(EmployeeServiceGrpc.getGetEmployeeInfoMethod(), AccessPredicate.hasRole("admin"));
+    // source.set(EmployeeServiceGrpc.getGetEmployeeInfoMethod(),
+    // AccessPredicate.hasRole("admin"));
     return source;
   }
 

@@ -1,13 +1,5 @@
 server:
   port: 8081
-  http2:
-    enabled: true
-  ssl:
-    key-store-type: PKCS12
-    key-store: classpath:keystore.p12
-    key-store-password: password
-    key-password: password
-    enabled: true
 
 spring:
   cloud:
@@ -24,7 +16,7 @@ spring:
           filters:
             - name: JsonToGrpc
               args:
-                protoDescriptor: classpath:schema.pb
-                protoFile: classpath:schema.proto
+                protoDescriptor: file:../proto/schema.pb
+                protoFile: file:../proto/schema.pb
                 service: UserService
                 method: createUser

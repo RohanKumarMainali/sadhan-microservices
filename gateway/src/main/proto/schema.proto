@@ -1,21 +1,22 @@
 syntax = "proto3";
 
 option java_multiple_files = true;
-import "google/protobuf/empty.proto";
 
 package com.sadhan.proto;
 
-message JwtRequest{
-      string email = 1;
-      string password = 2;
+message JwtRequest {
+    string email = 1;
+    string password = 2;
 }
 
-message JwtResponse{
+message JwtResponse {
     int32 statusCode = 1;
     string jwtToken = 2;
     string error = 3;
     string message = 4;
 }
+
+// Define the Role enum
 enum Role {
     ADMIN = 0;
     USER = 1;
@@ -29,44 +30,38 @@ enum Status {
     PENDING = 2;
 }
 
-
-message Employee{
-      string id = 1;
-      string name = 2;
-      string email = 3;
-      string phone = 4;
-      string department = 5;
+message Employee {
+    string id = 1;
+    string name = 2;
+    string email = 3;
+    string phone = 4;
+    string department = 5;
 }
 
-message User{
-  string name = 1;
-  string email = 2;
-  string password = 3;
-  Role role = 4;
-  Status status = 5;
-  }
+message User {
+    string name = 1;
+    string email = 2;
+    string password = 3;
+    Role role = 4;
+    Status status = 5;
+}
 
-  message CreateUserRequest{
+message CreateUserRequest {
+    string name = 1;
+    string email = 2;
+    string password = 3;
+}
 
-  string name = 1;
-  string email = 2;
-  string password = 3;
-  }
-
-  message CreateUserResponse{
+message CreateUserResponse {
     int32 statusCode = 1;
     string error = 3;
     string message = 4;
-  }
-
-service EmployeeService{
-      rpc getEmployeeInfo(google.protobuf.Empty) returns (Employee){}
 }
 
-service AuthService{
-      rpc authenticate(JwtRequest) returns (JwtResponse){}
+service AuthService {
+    rpc authenticate(JwtRequest) returns (JwtResponse){}
 }
 
-service UserService{
-  rpc createUser(CreateUserRequest) returns (CreateUserResponse){}
+service UserService {
+    rpc createUser(CreateUserRequest) returns (CreateUserResponse){}
 }
