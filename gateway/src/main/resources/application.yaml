@@ -9,14 +9,14 @@ spring:
           uri: http://localhost:8080
           predicates:
             - Path=/user/**
-        # - id: json-route
-        #   uri: https://localhost:9090
-        #   predicates:
-        #     - Path=/createUser/**
-        # filters:
-        #   - name: JsonToGrpc
-        #     args:
-        #       protoDescriptor: file:../proto/schema.pb
-        #       protoFile: file:../proto/schema.pb
-        #       service: UserService
-        #       method: createUser
+        - id: json-route
+          uri: https://localhost:9090
+          predicates:
+            - Path=/createUser/**
+          filters:
+            - name: JsonToGrpc
+              args:
+                protoDescriptor: classpath:schema.pb
+                protoFile: classpath:schema.pb
+                service: UserService
+                method: createUser

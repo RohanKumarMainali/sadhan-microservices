@@ -32,6 +32,17 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+<dependency>
+    <groupId>io.github.lognet</groupId>
+    <artifactId>grpc-spring-boot-starter</artifactId>
+    <version>5.1.5</version>
+</dependency>
+<dependency>
+    <groupId>io.grpc</groupId>
+    <artifactId>grpc-netty</artifactId>
+    <version>1.64.0</version>
+</dependency>
 		<dependency>
 			<groupId>io.projectreactor</groupId>
 			<artifactId>reactor-test</artifactId>
