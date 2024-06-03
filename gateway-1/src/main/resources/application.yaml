@@ -10,7 +10,7 @@ spring:
           predicates:
             - Path=/user/**
         - id: json-route
-          uri: https://localhost:9090
+          uri: grpc://localhost:9090
           predicates:
             - Path=/createUser/**
           filters:

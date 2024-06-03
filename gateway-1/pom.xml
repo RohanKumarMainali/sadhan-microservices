@@ -27,6 +27,12 @@
 			<artifactId>spring-cloud-starter-gateway</artifactId>
 		</dependency>
 
+<dependency>
+    <groupId>com.fasterxml.jackson.dataformat</groupId>
+    <artifactId>jackson-dataformat-protobuf</artifactId>
+    <version>2.12.3</version> <!-- or the latest version -->
+</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -37,6 +43,12 @@
     <groupId>io.github.lognet</groupId>
     <artifactId>grpc-spring-boot-starter</artifactId>
     <version>5.1.5</version>
+</dependency>
+
+<dependency>
+    <groupId>com.google.protobuf</groupId>
+    <artifactId>protobuf-java</artifactId>
+    <version>3.21.7</version> <!-- Use the appropriate version -->
 </dependency>
 <dependency>
     <groupId>io.grpc</groupId>
@@ -68,6 +80,12 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+
+	       <resources>
+	           <resource>
+	             <directory>src/main/proto/</directory>
+	           </resource>
+	       </resources>
 	</build>
 
 </project>
