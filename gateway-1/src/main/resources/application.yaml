@@ -4,6 +4,9 @@ server:
 spring:
   cloud:
     gateway:
+      httpclient:
+        ssl:
+          use-insecure-trust-manager: true
       routes:
         - id: path_route
           uri: http://localhost:8082
