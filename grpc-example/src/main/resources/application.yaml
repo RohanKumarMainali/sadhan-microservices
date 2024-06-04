@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: grpc-example
+grpc:
+  server:
+    port: 9091
+    security:
+      enabled: true
+      certificate-chain: classpath:localhost.crt
+      private-key: classpath:localhost.pem
