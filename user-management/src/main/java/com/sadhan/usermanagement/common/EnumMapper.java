@@ -15,7 +15,6 @@ public class EnumMapper {
         return UserRole.USER;
       case HOST:
         return UserRole.HOST;
-      case UNRECOGNIZED:
       default:
         throw new IllegalArgumentException("Unknown role: " + protoRole);
     }
@@ -29,7 +28,6 @@ public class EnumMapper {
         return UserStatus.PENDING;
       case INACTIVE:
         return UserStatus.INACTIVE;
-      case UNRECOGNIZED:
       default:
         throw new IllegalArgumentException("Unknown role: " + protoStatus);
     }

@@ -1,0 +1,25 @@
+server:
+  port: 8083
+
+spring:
+  cloud:
+    gateway:
+      httpclient:
+        ssl:
+          use-insecure-trust-manager: true
+      routes:
+        - id: path_route
+          uri: http://localhost:8082
+          predicates:
+            - Path=/user/**
+        - id: json-route
+          uri: grpc://localhost:9090
+          predicates:
+            - Path=/createUser/**
+          filters:
+            - name: JsonToGrpc
+              args:
+                protoDescriptor: classpath:schema.pb
+                protoFile: classpath:schema.proto
+                service: UserService
+                method: createUser

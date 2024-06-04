@@ -12,6 +12,18 @@ spring:
           uri: http://localhost:8082
           predicates:
             - Path=/user/**
+
+        - id: json-authenticate
+          uri: grpc://localhost:9090
+          predicates:
+            - Path=/login/**
+          filters:
+            - name: JsonToGrpc
+              args:
+                protoDescriptor: classpath:schema.pb
+                protoFile: classpath:schema.proto
+                service: AuthService
+                method: authenticate
         - id: json-route
           uri: grpc://localhost:9090
           predicates:

@@ -1,68 +1,68 @@
-syntax = "proto3";
+syntax = "proto2";
 
 option java_multiple_files = true;
 
 package com.sadhan.proto;
 
-message JwtRequest{
-      string email = 1;
-      string password = 2;
-}
 
-message JwtResponse{
-    int32 statusCode = 1;
-    string jwtToken = 2;
-    string error = 3;
-    string message = 4;
-}
 enum Role {
-    ADMIN = 0;
-    USER = 1;
-    HOST = 2;
+  ADMIN = 0;
+  USER = 1;
+  HOST = 2;
 }
 
-// Define the Status enum
 enum Status {
-    ACTIVE = 0;
-    INACTIVE = 1;
-    PENDING = 2;
+  ACTIVE = 0;
+  INACTIVE = 1;
+  PENDING = 2;
 }
 
 
-message Employee{
-      string id = 1;
-      string name = 2;
-      string email = 3;
-      string phone = 4;
-      string department = 5;
+message User {
+  required string name = 1;
+  required string email = 2;
+  required string password = 3;
+  optional Role role = 4 [default = ADMIN];
+  optional Status status = 5 [default = ACTIVE];
 }
 
-message User{
-  string name = 1;
-  string email = 2;
-  string password = 3;
-  Role role = 4;
-  Status status = 5;
-  }
-
-  message CreateUserRequest{
-
-  string name = 1;
-  string email = 2;
-  string password = 3;
-  }
-
-  message CreateUserResponse{
-    int32 statusCode = 1;
-    string error = 3;
-    string message = 4;
-  }
-
-
-service AuthService{
-      rpc authenticate(JwtRequest) returns (JwtResponse){}
+message Employee {
+  required string id = 1;
+  required string name = 2;
+  required string email = 3;
+  optional string phone = 4;
+  optional string department = 5;
 }
 
-service UserService{
-  rpc createUser(CreateUserRequest) returns (CreateUserResponse){}
+message JwtRequest {
+  required string email = 2;
+  required string password = 3;
 }
+
+message JwtResponse {
+  optional int32 statusCode = 1;
+  optional string jwtToken = 2;
+  optional string error = 3;
+  optional string message = 4;
+}
+
+service AuthService {
+  rpc authenticate(JwtRequest) returns (JwtResponse);
+}
+message CreateUserRequest {
+  required string name = 1;
+  required string email = 2;
+  required string password = 3;
+}
+
+message CreateUserResponse {
+  optional int32 statusCode = 1;
+  optional string error = 2;
+  optional string message = 3;
+}
+
+
+service UserService {
+  rpc createUser(CreateUserRequest) returns (CreateUserResponse);
+}
+
