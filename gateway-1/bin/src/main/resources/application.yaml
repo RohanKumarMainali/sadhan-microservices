@@ -4,9 +4,6 @@ server:
 spring:
   cloud:
     gateway:
-      httpclient:
-        ssl:
-          use-insecure-trust-manager: true
       routes:
         - id: path_route
           uri: http://localhost:8082
@@ -23,14 +20,3 @@ spring:
                 protoFile: classpath:schema.proto
                 service: UserService
                 method: createUser
-        - id: json
-          uri: grpc://localhost:6565
-          predicates:
-            - Path=/greetings/**
-          filters:
-            - name: JsonToGrpc
-              args:
-                protoDescriptor: classpath:greeting.pb
-                protoFile: classpath:greeting.proto
-                service: GreetingService
-                method: Hello

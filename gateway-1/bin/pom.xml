@@ -78,16 +78,14 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-
-    <configuration>
-          <additionalClasspathElements>
-            <additionalClasspathElement>src/main/resources/</additionalClasspathElement>
-            <additionalClasspathElement>src/main/proto/</additionalClasspathElement>
-          </additionalClasspathElements>
-    </configuration>
 			</plugin>
 		</plugins>
 
+	       <resources>
+	           <resource>
+	             <directory>src/main/proto/</directory>
+	           </resource>
+	       </resources>
 	</build>
 
 </project>
