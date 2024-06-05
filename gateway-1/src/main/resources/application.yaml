@@ -1,18 +1,26 @@
 server:
   port: 8081
+  http2:
+    enabled: true
+  ssl:
+    enabled: true
+    key-alias: baeldung
+    key-store: classpath:keystore.p12
+    key-store-password: password
+    key-store-type: PKCS12
 
 spring:
   cloud:
     gateway:
-      httpclient:
-        ssl:
-          use-insecure-trust-manager: true
+      # httpclient:
+      #   ssl:
+      #     useInsecureTrustManager: true
+
       routes:
         - id: path_route
           uri: http://localhost:8082
           predicates:
             - Path=/user/**
-
         - id: json-authenticate
           uri: grpc://localhost:9090
           predicates:
@@ -24,6 +32,17 @@ spring:
                 protoFile: classpath:schema.proto
                 service: AuthService
                 method: authenticate
+        - id: json-hello
+          uri: https://localhost:9091
+          predicates:
+            - Path=/hello/**
+          filters:
+            - name: JsonToGrpc
+              args:
+                protoDescriptor: classpath:hello.pb
+                protoFile: classpath:hello.proto
+                service: HelloWorldService
+                method: sayHello
         - id: json-route
           uri: grpc://localhost:9090
           predicates:
