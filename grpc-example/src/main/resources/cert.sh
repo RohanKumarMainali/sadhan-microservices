@@ -4,16 +4,16 @@ rm *.pem
 openssl genrsa -des3 -out ca.key.pem 2048
 
 # //create CA's self-signed certificate
-openssl req -x509 -new -nodes -key ca.key.pem -sha256 -days 365 -out localhost.cert.pem
+openssl req -x509 -new -nodes -key ca.key.pem -sha256 -days 365 -out localhost.cert.pem -config san.cnf
 
 # //create private key for server
 openssl genrsa -out localhost.key 2048
 
 # //create certificate signing request (CSR)
-openssl req -new -key localhost.key -out localhost.csr
+openssl req -new -key localhost.key -out localhost.csr -config san.cnf
 
 # //Use CA's private key to sign web server's CSR and get back the signed certificate
-openssl x509 -req -in localhost.csr -CA localhost.cert.pem -CAkey ca.key.pem -CAcreateserial -out localhost.crt -days 365
+openssl x509 -req -in localhost.csr -CA localhost.cert.pem -CAkey ca.key.pem -CAcreateserial -out localhost.crt -days 365 -extfile san.cnf -extensions v3_req
 
 # //convert server private key in PKCS8 standard(gRPc expects)
 openssl pkcs8 -topk8 -nocrypt -in localhost.key -out localhost.pem
