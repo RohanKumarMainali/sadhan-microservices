@@ -7,4 +7,4 @@ grpc:
     security:
       enabled: true
       certificate-chain: classpath:localhost.crt
-      private-key: classpath:localhost.pem
+      private-key: classpath:localhost.key

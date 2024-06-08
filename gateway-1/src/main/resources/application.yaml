@@ -4,19 +4,23 @@ server:
     enabled: true
   ssl:
     enabled: true
-    key-alias: baeldung
-    key-store: classpath:keystore.p12
+    key-alias: 1
+    key-store: classpath:client-identity.p12
     key-store-password: password
     key-store-type: PKCS12
 
 spring:
   cloud:
     gateway:
-      # httpclient:
-      #   ssl:
-      #     useInsecureTrustManager: true
+      httpclient:
+        ssl:
+          useInsecureTrustManager: true
 
       routes:
+        - id: path_route
+          uri: https://localhost:8082
+          predicates:
+            - Path=/user/**
         - id: path_route
           uri: http://localhost:8082
           predicates:
@@ -35,7 +39,7 @@ spring:
         - id: json-hello
           uri: https://localhost:9091
           predicates:
-            - Path=/hello/**
+            - Path=/rohan/**
           filters:
             - name: JsonToGrpc
               args:
