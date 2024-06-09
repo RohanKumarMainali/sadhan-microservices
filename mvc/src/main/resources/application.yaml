@@ -7,6 +7,6 @@ server:
     enabled: true
   ssl:
     enabled: true
-    key-store: classpath:client-identity.p12
+    key-store: classpath:keystore.p12
     key-store-password: password
     key-store-type: PKCS12

@@ -1,6 +1,14 @@
 server:
   port: 8081
 
+  http2:
+    enabled: true
+  ssl:
+    enabled: true
+    key-store: classpath:keystore.p12
+    key-store-password: password
+    key-store-type: PKCS12
+
 spring:
   cloud:
     gateway:

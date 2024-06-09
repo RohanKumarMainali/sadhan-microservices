@@ -4,8 +4,7 @@ server:
     enabled: true
   ssl:
     enabled: true
-    key-alias: 1
-    key-store: classpath:client-identity.p12
+    key-store: classpath:keystore.p12
     key-store-password: password
     key-store-type: PKCS12
 
@@ -14,15 +13,12 @@ spring:
     gateway:
       httpclient:
         ssl:
-          useInsecureTrustManager: true
+          trustedX509Certificates:
+            - classpath:certificate.pem
 
       routes:
         - id: path_route
           uri: https://localhost:8082
-          predicates:
-            - Path=/user/**
-        - id: path_route
-          uri: http://localhost:8082
           predicates:
             - Path=/user/**
         - id: json-authenticate
@@ -47,25 +43,30 @@ spring:
                 protoFile: classpath:hello.proto
                 service: HelloWorldService
                 method: sayHello
-        - id: json-route
-          uri: grpc://localhost:9090
-          predicates:
-            - Path=/createUser/**
-          filters:
-            - name: JsonToGrpc
-              args:
-                protoDescriptor: classpath:schema.pb
-                protoFile: classpath:schema.proto
-                service: UserService
-                method: createUser
-        - id: json
-          uri: grpc://localhost:6565
-          predicates:
-            - Path=/greetings/**
-          filters:
-            - name: JsonToGrpc
-              args:
-                protoDescriptor: classpath:greeting.pb
-                protoFile: classpath:greeting.proto
-                service: GreetingService
-                method: Hello
+logging:
+  level:
+    reactor.netty: DEBUG
+    org.springframework.cloud.gateway.filter:
+      TRACE
+      # - id: json-route
+      #   uri: grpc://localhost:9090
+      #   predicates:
+      #     - Path=/createUser/**
+      #   filters:
+      #     - name: JsonToGrpc
+      #       args:
+      #         protoDescriptor: classpath:schema.pb
+      #         protoFile: classpath:schema.proto
+      #         service: UserService
+      #         method: createUser
+      # - id: json
+      #   uri: grpc://localhost:6565
+      #   predicates:
+      #     - Path=/greetings/**
+      #   filters:
+      #     - name: JsonToGrpc
+      #       args:
+      #         protoDescriptor: classpath:greeting.pb
+      #         protoFile: classpath:greeting.proto
+      #         service: GreetingService
+      #         method: Hello
