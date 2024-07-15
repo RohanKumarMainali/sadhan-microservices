@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mvc-server
+  labels:
+    app: mvc
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mvc
+  template:
+    metadata:
+      labels:
+        app: mvc
+    spec:
+      containers:
+        - name: mvc
+          image: demo:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
